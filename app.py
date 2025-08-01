@@ -303,17 +303,8 @@ def get_analyzers():
 
 seo_analyzer, preview_generator = get_analyzers()
 
-# Main title and description
+# Main title
 st.title("🔍 SEO Meta Tag Analyzer")
-st.markdown("""
-<div style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 1.5rem; border-radius: 12px; margin: 1rem 0;">
-    <h4 style="color: #495057; margin-bottom: 1rem;">📚 What does this tool do?</h4>
-    <p style="color: #6c757d; margin-bottom: 0.5rem;">• <strong>Analyzes your website's SEO</strong> - Checks if search engines can understand your page properly</p>
-    <p style="color: #6c757d; margin-bottom: 0.5rem;">• <strong>Shows Google preview</strong> - See exactly how your page appears in search results</p>
-    <p style="color: #6c757d; margin-bottom: 0.5rem;">• <strong>Social media previews</strong> - Check how your page looks when shared on Facebook, Twitter, LinkedIn</p>
-    <p style="color: #6c757d; margin-bottom: 0;">• <strong>Easy recommendations</strong> - Get simple tips to improve your page's visibility</p>
-</div>
-""", unsafe_allow_html=True)
 
 # URL input section
 st.header("Website Analysis")
@@ -692,9 +683,10 @@ if hasattr(st.session_state, 'analysis_result') and st.session_state.analysis_re
             for tag, value in technical_tags.items():
                 st.write(f"**{tag}:** {value}")
 
-# Footer
+# Footer with attribution
 st.markdown("""
-<div class="footer">
-    <p>SEO Meta Tag Analyzer - Improve your website's search engine optimization</p>
+---
+<div style="text-align: center; padding: 1rem 0; color: #6c757d; font-size: 0.9rem;">
+    This app is made by Geetansh Vyas
 </div>
 """, unsafe_allow_html=True)
