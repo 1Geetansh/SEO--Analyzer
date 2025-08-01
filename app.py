@@ -12,6 +12,235 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Add custom CSS for responsive design and better styling
+st.markdown("""
+<style>
+    /* Mobile-first responsive design */
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        max-width: 1200px;
+    }
+    
+    /* Better button styling */
+    .stButton > button {
+        width: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        margin: 0.5rem 0;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* SEO Score styling */
+    .seo-score-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem 0;
+    }
+    
+    .seo-score {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        min-width: 200px;
+    }
+    
+    .seo-score h2 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    
+    .seo-score p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+        font-size: 0.9rem;
+    }
+    
+    /* Input styling */
+    .stTextInput > div > div > input {
+        border-radius: 8px;
+        border: 2px solid #e1e5e9;
+        padding: 0.75rem;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    /* Preview cards responsive design */
+    .preview-card {
+        margin: 1rem 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+    
+    .preview-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Responsive columns */
+    @media (max-width: 768px) {
+        .main .block-container {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        
+        .seo-score {
+            padding: 1rem 1.5rem;
+            min-width: 150px;
+        }
+        
+        .seo-score h2 {
+            font-size: 1.5rem;
+        }
+        
+        /* Stack columns on mobile */
+        .element-container {
+            width: 100% !important;
+        }
+    }
+    
+    /* Header styling */
+    h1 {
+        text-align: center;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Issues and recommendations styling */
+    .issue-item {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 4px;
+    }
+    
+    .recommendation-item {
+        background: #d1ecf1;
+        border-left: 4px solid #17a2b8;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 4px;
+    }
+    
+    /* Expandable sections */
+    .streamlit-expanderHeader {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+    
+    /* Character count styling */
+    .character-count {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+    }
+    
+    /* Footer styling */
+    .footer {
+        text-align: center;
+        padding: 2rem 0;
+        margin-top: 3rem;
+        border-top: 1px solid #e1e5e9;
+        color: #6c757d;
+    }
+    
+    /* Tab styling improvements */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        padding: 0 24px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background-color: #667eea;
+        color: white;
+    }
+    
+    /* Meta tags section styling */
+    .meta-tag-section {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .meta-tag-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border-left: 4px solid #667eea;
+    }
+    
+    /* Responsive improvements for small screens */
+    @media (max-width: 480px) {
+        .main .block-container {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+        }
+        
+        .seo-score {
+            padding: 1rem;
+            min-width: 120px;
+        }
+        
+        .seo-score h2 {
+            font-size: 1.25rem;
+        }
+        
+        .preview-card {
+            margin: 0.5rem 0;
+        }
+        
+        .stTabs [data-baseweb="tab"] {
+            padding: 0 12px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Initialize analyzers
 @st.cache_resource
 def get_analyzers():
@@ -73,31 +302,51 @@ if hasattr(st.session_state, 'analysis_result') and st.session_state.analysis_re
     st.header("📊 SEO Validation")
     validation_results = seo_analyzer.validate_seo(meta_tags)
     
-    # Create columns for score and issues
-    col1, col2 = st.columns([1, 2])
+    # Centered SEO Score
+    score = validation_results["score"]
+    if score >= 80:
+        score_color = "#28a745"
+        score_emoji = "🟢"
+        score_text = "Excellent"
+    elif score >= 60:
+        score_color = "#ffc107"
+        score_emoji = "🟡"
+        score_text = "Good"
+    else:
+        score_color = "#dc3545"
+        score_emoji = "🔴"
+        score_text = "Needs Improvement"
     
-    with col1:
-        score = validation_results["score"]
-        if score >= 80:
-            st.success(f"**SEO Score: {score}/100** 🟢")
-        elif score >= 60:
-            st.warning(f"**SEO Score: {score}/100** 🟡")
-        else:
-            st.error(f"**SEO Score: {score}/100** 🔴")
+    st.markdown(f"""
+    <div class="seo-score-container">
+        <div class="seo-score">
+            <h2>{score}/100</h2>
+            <p>{score_emoji} {score_text}</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
-    with col2:
-        st.write("**Issues Found:**")
-        if validation_results["issues"]:
-            for issue in validation_results["issues"]:
-                st.write(f"• {issue}")
-        else:
-            st.write("✅ No major issues found!")
+    # Issues section
+    if validation_results["issues"]:
+        st.subheader("⚠️ Issues Found")
+        for issue in validation_results["issues"]:
+            st.markdown(f"""
+            <div class="issue-item">
+                • {issue}
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.success("✅ No major issues found!")
     
     # Recommendations
     if validation_results["recommendations"]:
         st.subheader("💡 Recommendations")
         for recommendation in validation_results["recommendations"]:
-            st.info(recommendation)
+            st.markdown(f"""
+            <div class="recommendation-item">
+                💡 {recommendation}
+            </div>
+            """, unsafe_allow_html=True)
     
     # Social Media Previews
     st.header("📱 Social Media Previews")
@@ -119,27 +368,44 @@ if hasattr(st.session_state, 'analysis_result') and st.session_state.analysis_re
     
     # Basic Meta Tags
     with st.expander("📄 Basic Meta Tags", expanded=True):
-        col1, col2 = st.columns(2)
+        # Title section
+        st.subheader("📝 Title Tag")
+        if meta_tags.get("title"):
+            st.markdown(f"""
+            <div class="meta-tag-item">
+                <div style="font-family: monospace; background: #e9ecef; padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0;">
+                    {meta_tags["title"]}
+                </div>
+                <small>Length: {len(meta_tags['title'])} characters</small>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.error("❌ No title tag found")
         
-        with col1:
-            st.subheader("Title")
-            if meta_tags.get("title"):
-                st.code(meta_tags["title"])
-                st.caption(f"Length: {len(meta_tags['title'])} characters")
-            else:
-                st.error("❌ No title tag found")
+        # Description section
+        st.subheader("📄 Meta Description")
+        if meta_tags.get("description"):
+            st.markdown(f"""
+            <div class="meta-tag-item">
+                <div style="font-family: monospace; background: #e9ecef; padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0;">
+                    {meta_tags["description"]}
+                </div>
+                <small>Length: {len(meta_tags['description'])} characters</small>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.error("❌ No description meta tag found")
         
-        with col2:
-            st.subheader("Description")
-            if meta_tags.get("description"):
-                st.code(meta_tags["description"])
-                st.caption(f"Length: {len(meta_tags['description'])} characters")
-            else:
-                st.error("❌ No description meta tag found")
-        
+        # Keywords section
         if meta_tags.get("keywords"):
-            st.subheader("Keywords")
-            st.code(meta_tags["keywords"])
+            st.subheader("🔍 Keywords")
+            st.markdown(f"""
+            <div class="meta-tag-item">
+                <div style="font-family: monospace; background: #e9ecef; padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0;">
+                    {meta_tags["keywords"]}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
     
     # Open Graph Tags
     og_tags = {k: v for k, v in meta_tags.items() if k.startswith("og:")}
@@ -167,9 +433,8 @@ if hasattr(st.session_state, 'analysis_result') and st.session_state.analysis_re
                 st.write(f"**{tag}:** {value}")
 
 # Footer
-st.markdown("---")
 st.markdown("""
-<div style='text-align: center; color: #666;'>
+<div class="footer">
     <p>SEO Meta Tag Analyzer - Improve your website's search engine optimization</p>
 </div>
 """, unsafe_allow_html=True)

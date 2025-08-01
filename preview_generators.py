@@ -21,29 +21,31 @@ class PreviewGenerator:
         
         # Create Google-like preview
         st.markdown(f"""
-        <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin: 10px 0; background: white;">
-            <div style="color: #1a0dab; font-size: 18px; font-weight: normal; margin-bottom: 4px; cursor: pointer;">
+        <div class="preview-card" style="border: 1px solid #e0e0e0; padding: 16px; background: white; max-width: 100%;">
+            <div style="color: #1a0dab; font-size: 1.1rem; font-weight: normal; margin-bottom: 4px; cursor: pointer; word-wrap: break-word;">
                 {display_title}
             </div>
-            <div style="color: #006621; font-size: 14px; margin-bottom: 4px;">
+            <div style="color: #006621; font-size: 0.9rem; margin-bottom: 4px;">
                 {domain}
             </div>
-            <div style="color: #545454; font-size: 14px; line-height: 1.4;">
+            <div style="color: #545454; font-size: 0.9rem; line-height: 1.4; word-wrap: break-word;">
                 {display_description}
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Show character counts
-        col1, col2 = st.columns(2)
-        with col1:
-            title_color = "green" if len(title) <= 60 else "orange" if len(title) <= 70 else "red"
-            st.markdown(f"**Title:** <span style='color: {title_color}'>{len(title)}/60 characters</span>", 
-                       unsafe_allow_html=True)
-        with col2:
-            desc_color = "green" if len(description) <= 160 else "orange" if len(description) <= 170 else "red"
-            st.markdown(f"**Description:** <span style='color: {desc_color}'>{len(description)}/160 characters</span>", 
-                       unsafe_allow_html=True)
+        # Show character counts with responsive design
+        title_color = "#28a745" if len(title) <= 60 else "#ffc107" if len(title) <= 70 else "#dc3545"
+        desc_color = "#28a745" if len(description) <= 160 else "#ffc107" if len(description) <= 170 else "#dc3545"
+        
+        st.markdown(f"""
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between;">
+                <div><strong>Title:</strong> <span style='color: {title_color}; font-weight: 600;'>{len(title)}/60 characters</span></div>
+                <div><strong>Description:</strong> <span style='color: {desc_color}; font-weight: 600;'>{len(description)}/160 characters</span></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
     def render_facebook_preview(self, meta_tags, url):
         """
@@ -59,18 +61,18 @@ class PreviewGenerator:
         display_description = self._truncate_text(description, 300)
         
         st.markdown(f"""
-        <div style="border: 1px solid #dadde1; border-radius: 8px; overflow: hidden; background: white; max-width: 500px;">
+        <div class="preview-card" style="border: 1px solid #dadde1; overflow: hidden; background: white; max-width: 100%; width: 100%;">
             <div style="height: 200px; background: #f0f2f5; display: flex; align-items: center; justify-content: center; color: #8a8d91;">
-                {f'<div style="font-size: 12px;">🖼️ Image: {image[:50]}...</div>' if image else '<div>No Open Graph image</div>'}
+                {f'<div style="font-size: 0.8rem; text-align: center; padding: 1rem;">🖼️ Image: {image[:50]}...</div>' if image else '<div>No Open Graph image</div>'}
             </div>
             <div style="padding: 12px;">
-                <div style="color: #8a8d91; font-size: 12px; text-transform: uppercase; margin-bottom: 4px;">
+                <div style="color: #8a8d91; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">
                     {site_name}
                 </div>
-                <div style="color: #1d2129; font-size: 16px; font-weight: 600; margin-bottom: 4px; line-height: 1.3;">
+                <div style="color: #1d2129; font-size: 1rem; font-weight: 600; margin-bottom: 4px; line-height: 1.3; word-wrap: break-word;">
                     {display_title}
                 </div>
-                <div style="color: #606770; font-size: 14px; line-height: 1.3;">
+                <div style="color: #606770; font-size: 0.9rem; line-height: 1.3; word-wrap: break-word;">
                     {display_description}
                 </div>
             </div>
@@ -106,18 +108,18 @@ class PreviewGenerator:
             image_height = "120px"
         
         st.markdown(f"""
-        <div style="border: 1px solid #cfd9de; border-radius: 12px; overflow: hidden; background: white; max-width: 500px;">
+        <div class="preview-card" style="border: 1px solid #cfd9de; overflow: hidden; background: white; max-width: 100%; width: 100%;">
             <div style="height: {image_height}; background: #f7f9fa; display: flex; align-items: center; justify-content: center; color: #536471;">
-                {f'<div style="font-size: 12px;">🖼️ Image: {image[:50]}...</div>' if image else '<div>No Twitter image</div>'}
+                {f'<div style="font-size: 0.8rem; text-align: center; padding: 1rem;">🖼️ Image: {image[:50]}...</div>' if image else '<div>No Twitter image</div>'}
             </div>
             <div style="padding: 12px;">
-                <div style="color: #0f1419; font-size: 15px; font-weight: 700; margin-bottom: 4px; line-height: 1.3;">
+                <div style="color: #0f1419; font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; line-height: 1.3; word-wrap: break-word;">
                     {display_title}
                 </div>
-                <div style="color: #536471; font-size: 14px; line-height: 1.3; margin-bottom: 4px;">
+                <div style="color: #536471; font-size: 0.9rem; line-height: 1.3; margin-bottom: 4px; word-wrap: break-word;">
                     {display_description}
                 </div>
-                <div style="color: #536471; font-size: 14px;">
+                <div style="color: #536471; font-size: 0.85rem;">
                     🔗 {urlparse(url).netloc if url else 'example.com'}
                 </div>
             </div>
@@ -144,18 +146,18 @@ class PreviewGenerator:
         display_description = self._truncate_text(description, 300)
         
         st.markdown(f"""
-        <div style="border: 1px solid #d0d0d0; border-radius: 2px; overflow: hidden; background: white; max-width: 520px;">
+        <div class="preview-card" style="border: 1px solid #d0d0d0; overflow: hidden; background: white; max-width: 100%; width: 100%;">
             <div style="height: 272px; background: #f3f2ef; display: flex; align-items: center; justify-content: center; color: #666666;">
-                {f'<div style="font-size: 12px;">🖼️ Image: {image[:50]}...</div>' if image else '<div>No Open Graph image</div>'}
+                {f'<div style="font-size: 0.8rem; text-align: center; padding: 1rem;">🖼️ Image: {image[:50]}...</div>' if image else '<div>No Open Graph image</div>'}
             </div>
             <div style="padding: 12px 16px 16px 16px;">
-                <div style="color: #000000; font-size: 16px; font-weight: 600; margin-bottom: 4px; line-height: 1.4;">
+                <div style="color: #000000; font-size: 1rem; font-weight: 600; margin-bottom: 4px; line-height: 1.4; word-wrap: break-word;">
                     {display_title}
                 </div>
-                <div style="color: #666666; font-size: 14px; line-height: 1.4; margin-bottom: 8px;">
+                <div style="color: #666666; font-size: 0.9rem; line-height: 1.4; margin-bottom: 8px; word-wrap: break-word;">
                     {display_description}
                 </div>
-                <div style="color: #666666; font-size: 12px;">
+                <div style="color: #666666; font-size: 0.75rem;">
                     {site_name}
                 </div>
             </div>
