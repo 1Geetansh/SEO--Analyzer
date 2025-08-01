@@ -259,16 +259,20 @@ Get actionable feedback to improve your SEO implementation.
 st.header("Website Analysis")
 url_input = st.text_input(
     "Enter website URL to analyze:",
-    placeholder="https://example.com",
-    help="Enter a complete URL including http:// or https://"
+    placeholder="example.com",
+    help="Enter any website URL (protocol will be added automatically)"
 )
 
 analyze_button = st.button("Analyze Website", type="primary")
 
 if analyze_button and url_input:
+    # Auto-add protocol if missing
+    if not url_input.startswith(('http://', 'https://')):
+        url_input = 'https://' + url_input
+    
     # Validate URL
     if not validators.url(url_input):
-        st.error("❌ Please enter a valid URL (e.g., https://example.com)")
+        st.error("❌ Please enter a valid URL (e.g., example.com or https://example.com)")
     else:
         # Show loading spinner
         with st.spinner("Fetching and analyzing website..."):

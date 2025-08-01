@@ -7,8 +7,12 @@ class PreviewGenerator:
         """
         Render Google search result preview
         """
-        title = meta_tags.get('title', 'No title')
-        description = meta_tags.get('description', 'No description available')
+        title = meta_tags.get('title', 'Untitled Page')
+        description = meta_tags.get('description', '')
+        
+        # If no description, create a more realistic fallback
+        if not description:
+            description = "This page doesn't have a meta description. Search engines will generate a snippet from the page content instead."
         
         # Truncate title for Google (typically ~60 characters)
         display_title = self._truncate_text(title, 60)
@@ -51,10 +55,14 @@ class PreviewGenerator:
         """
         Render Facebook sharing preview
         """
-        title = meta_tags.get('og:title', meta_tags.get('title', 'No title'))
-        description = meta_tags.get('og:description', meta_tags.get('description', 'No description'))
+        title = meta_tags.get('og:title', meta_tags.get('title', 'Untitled Page'))
+        description = meta_tags.get('og:description', meta_tags.get('description', ''))
         image = meta_tags.get('og:image', '')
         site_name = meta_tags.get('og:site_name', urlparse(url).netloc if url else 'Website')
+        
+        # Better fallback for missing description
+        if not description:
+            description = "Check out this page for more information."
         
         # Truncate for Facebook
         display_title = self._truncate_text(title, 100)
@@ -90,12 +98,16 @@ class PreviewGenerator:
         Render Twitter card preview
         """
         card_type = meta_tags.get('twitter:card', 'summary')
-        title = meta_tags.get('twitter:title', meta_tags.get('og:title', meta_tags.get('title', 'No title')))
+        title = meta_tags.get('twitter:title', meta_tags.get('og:title', meta_tags.get('title', 'Untitled Page')))
         description = meta_tags.get('twitter:description', 
                                   meta_tags.get('og:description', 
-                                              meta_tags.get('description', 'No description')))
+                                              meta_tags.get('description', '')))
         image = meta_tags.get('twitter:image', meta_tags.get('og:image', ''))
         site = meta_tags.get('twitter:site', '@website')
+        
+        # Better fallback for missing description
+        if not description:
+            description = "Shared from " + (urlparse(url).netloc if url else 'this website')
         
         # Truncate for Twitter
         display_title = self._truncate_text(title, 70)
@@ -136,10 +148,14 @@ class PreviewGenerator:
         """
         Render LinkedIn sharing preview
         """
-        title = meta_tags.get('og:title', meta_tags.get('title', 'No title'))
-        description = meta_tags.get('og:description', meta_tags.get('description', 'No description'))
+        title = meta_tags.get('og:title', meta_tags.get('title', 'Untitled Page'))
+        description = meta_tags.get('og:description', meta_tags.get('description', ''))
         image = meta_tags.get('og:image', '')
         site_name = meta_tags.get('og:site_name', urlparse(url).netloc if url else 'Website')
+        
+        # Better fallback for missing description
+        if not description:
+            description = "Visit this page to learn more about what we have to offer."
         
         # Truncate for LinkedIn
         display_title = self._truncate_text(title, 200)
@@ -172,8 +188,17 @@ class PreviewGenerator:
     
     def _truncate_text(self, text, max_length):
         """
-        Truncate text with ellipsis if it exceeds max_length
+        Truncate text with ellipsis if it exceeds max_length, breaking at word boundaries when possible
         """
         if len(text) <= max_length:
             return text
-        return text[:max_length-3] + "..."
+        
+        # Try to break at word boundary
+        truncated = text[:max_length-3]
+        last_space = truncated.rfind(' ')
+        
+        # If we found a space and it's not too close to the beginning, break there
+        if last_space > max_length * 0.7:
+            return truncated[:last_space] + "..."
+        else:
+            return truncated + "..."
