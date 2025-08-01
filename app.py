@@ -213,7 +213,32 @@ st.markdown("""
         border-left: 4px solid #667eea;
     }
     
+    /* Summary cards styling */
+    .summary-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        margin: 0.5rem 0;
+        transition: transform 0.2s ease;
+    }
+    
+    .summary-card:hover {
+        transform: translateY(-2px);
+    }
+    
     /* Responsive improvements for small screens */
+    @media (max-width: 768px) {
+        .category-card {
+            height: auto !important;
+            min-height: 120px;
+        }
+        
+        .summary-card {
+            margin: 0.25rem 0;
+        }
+    }
+    
     @media (max-width: 480px) {
         .main .block-container {
             padding-left: 0.25rem;
@@ -236,6 +261,12 @@ st.markdown("""
         .stTabs [data-baseweb="tab"] {
             padding: 0 12px;
             font-size: 0.9rem;
+        }
+        
+        .category-card {
+            height: auto !important;
+            min-height: 100px;
+            padding: 0.75rem !important;
         }
     }
 </style>
@@ -303,10 +334,10 @@ if hasattr(st.session_state, 'analysis_result') and st.session_state.analysis_re
     preview_generator.render_google_preview(meta_tags, result["final_url"])
     
     # SEO Validation
-    st.header("📊 SEO Validation")
+    st.header("📊 SEO Analysis Overview")
     validation_results = seo_analyzer.validate_seo(meta_tags)
     
-    # Centered SEO Score
+    # Overall Score
     score = validation_results["score"]
     if score >= 80:
         score_color = "#28a745"
@@ -325,10 +356,105 @@ if hasattr(st.session_state, 'analysis_result') and st.session_state.analysis_re
     <div class="seo-score-container">
         <div class="seo-score">
             <h2>{score}/100</h2>
-            <p>{score_emoji} {score_text}</p>
+            <p>{score_emoji} Overall SEO Score</p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem;">{score_text}</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Category Scores
+    st.subheader("📋 Category Breakdown")
+    category_scores = validation_results["category_scores"]
+    
+    # Create 2x2 grid for category scores
+    col1, col2 = st.columns(2)
+    col3, col4 = st.columns(2)
+    
+    columns = [col1, col2, col3, col4]
+    categories = ["basic_meta", "social_media", "technical_seo", "content_structure"]
+    icons = ["📝", "📱", "⚙️", "📄"]
+    
+    for i, (col, category_key, icon) in enumerate(zip(columns, categories, icons)):
+        category = category_scores[category_key]
+        cat_score = category["score"]
+        
+        if cat_score >= 80:
+            cat_color = "#28a745"
+            cat_status = "Great"
+        elif cat_score >= 60:
+            cat_color = "#ffc107"  
+            cat_status = "Good"
+        else:
+            cat_color = "#dc3545"
+            cat_status = "Needs Work"
+        
+        with col:
+            st.markdown(f"""
+            <div class="category-card" style="background: linear-gradient(135deg, {cat_color}15, {cat_color}05); 
+                        border: 2px solid {cat_color}30; 
+                        border-radius: 12px; 
+                        padding: 1rem; 
+                        text-align: center; 
+                        margin: 0.5rem 0;
+                        height: 140px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        transition: transform 0.2s ease;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">{icon}</div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: {cat_color}; margin-bottom: 0.2rem;">{cat_score}%</div>
+                <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem;">{category["name"]}</div>
+                <div style="font-size: 0.7rem; color: #666; line-height: 1.2;">{category["description"]}</div>
+                <div style="font-size: 0.8rem; color: {cat_color}; font-weight: 600; margin-top: 0.3rem;">{cat_status}</div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # Quick Summary Section
+    st.subheader("⚡ Quick Summary")
+    
+    # Count issues by severity
+    total_issues = len(validation_results["issues"])
+    total_recommendations = len(validation_results["recommendations"])
+    
+    # Create summary metrics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown(f"""
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 1rem; text-align: center; border-left: 4px solid #667eea;">
+            <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;">{score}</div>
+            <div style="font-size: 0.8rem; color: #666;">Overall Score</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        color = "#dc3545" if total_issues > 3 else "#ffc107" if total_issues > 0 else "#28a745"
+        st.markdown(f"""
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 1rem; text-align: center; border-left: 4px solid {color};">
+            <div style="font-size: 1.5rem; font-weight: bold; color: {color};">{total_issues}</div>
+            <div style="font-size: 0.8rem; color: #666;">Issues Found</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        color = "#ffc107" if total_recommendations > 0 else "#28a745"
+        st.markdown(f"""
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 1rem; text-align: center; border-left: 4px solid {color};">
+            <div style="font-size: 1.5rem; font-weight: bold; color: {color};">{total_recommendations}</div>
+            <div style="font-size: 0.8rem; color: #666;">Recommendations</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        # Calculate average category score
+        avg_category_score = sum(cat["score"] for cat in category_scores.values()) // 4
+        color = "#28a745" if avg_category_score >= 80 else "#ffc107" if avg_category_score >= 60 else "#dc3545"
+        st.markdown(f"""
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 1rem; text-align: center; border-left: 4px solid {color};">
+            <div style="font-size: 1.5rem; font-weight: bold; color: {color};">{avg_category_score}%</div>
+            <div style="font-size: 0.8rem; color: #666;">Avg Category</div>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Issues section
     if validation_results["issues"]:

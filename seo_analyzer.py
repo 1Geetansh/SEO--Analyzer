@@ -113,43 +113,54 @@ class SEOAnalyzer:
     
     def validate_seo(self, meta_tags):
         """
-        Validate SEO implementation and provide recommendations
+        Validate SEO implementation and provide recommendations with category breakdown
         """
         issues = []
         recommendations = []
         score = 100
         
-        # Title validation
+        # Category scores
+        basic_meta_score = 100
+        social_media_score = 100
+        technical_seo_score = 100
+        content_structure_score = 100
+        
+        # BASIC META TAGS VALIDATION
         title = meta_tags.get('title', '')
         if not title:
             issues.append("Missing title tag")
+            basic_meta_score -= 50
             score -= 25
         else:
             if len(title) < 30:
                 issues.append("Title is too short (< 30 characters)")
                 recommendations.append("Consider expanding your title to 50-60 characters for optimal search visibility")
+                basic_meta_score -= 20
                 score -= 10
             elif len(title) > 60:
                 issues.append("Title is too long (> 60 characters) - may be truncated in search results")
                 recommendations.append("Shorten your title to 50-60 characters to prevent truncation")
+                basic_meta_score -= 10
                 score -= 5
         
-        # Description validation
         description = meta_tags.get('description', '')
         if not description:
             issues.append("Missing meta description")
+            basic_meta_score -= 50
             score -= 20
         else:
             if len(description) < 120:
                 issues.append("Meta description is too short (< 120 characters)")
                 recommendations.append("Expand your meta description to 150-160 characters for better search snippets")
+                basic_meta_score -= 20
                 score -= 10
             elif len(description) > 160:
                 issues.append("Meta description is too long (> 160 characters) - may be truncated")
                 recommendations.append("Shorten your meta description to 150-160 characters")
+                basic_meta_score -= 10
                 score -= 5
         
-        # Open Graph validation
+        # SOCIAL MEDIA VALIDATION
         og_title = meta_tags.get('og:title')
         og_description = meta_tags.get('og:description')
         og_image = meta_tags.get('og:image')
@@ -157,57 +168,104 @@ class SEOAnalyzer:
         if not og_title:
             issues.append("Missing Open Graph title (og:title)")
             recommendations.append("Add og:title meta tag for better social media sharing")
+            social_media_score -= 20
             score -= 5
         
         if not og_description:
             issues.append("Missing Open Graph description (og:description)")
             recommendations.append("Add og:description meta tag for social media previews")
+            social_media_score -= 20
             score -= 5
         
         if not og_image:
             issues.append("Missing Open Graph image (og:image)")
             recommendations.append("Add og:image meta tag with a high-quality image (1200x630px recommended)")
+            social_media_score -= 30
             score -= 5
         
-        # Twitter Card validation
         twitter_card = meta_tags.get('twitter:card')
         if not twitter_card:
             issues.append("Missing Twitter Card type")
             recommendations.append("Add twitter:card meta tag (summary_large_image recommended)")
+            social_media_score -= 20
             score -= 5
         
-        # Technical SEO
+        twitter_title = meta_tags.get('twitter:title')
+        twitter_description = meta_tags.get('twitter:description')
+        if not twitter_title and not og_title:
+            social_media_score -= 10
+        
+        # TECHNICAL SEO VALIDATION 
         canonical = meta_tags.get('canonical')
         if not canonical:
             recommendations.append("Consider adding a canonical URL to prevent duplicate content issues")
+            technical_seo_score -= 15
             score -= 3
         
         robots = meta_tags.get('robots')
         if robots and ('noindex' in robots.lower() or 'nofollow' in robots.lower()):
             issues.append("Page has restrictive robots meta tag")
             recommendations.append("Review robots meta tag - it may prevent search engine indexing")
+            technical_seo_score -= 20
         
-        # H1 tags
-        h1_tags = meta_tags.get('h1_tags', [])
-        if not h1_tags:
-            issues.append("No H1 tags found")
-            recommendations.append("Add at least one H1 tag to structure your content")
-            score -= 5
-        elif len(h1_tags) > 1:
-            recommendations.append("Multiple H1 tags found - consider using only one H1 per page")
-        
-        # Viewport for mobile
         viewport = meta_tags.get('viewport')
         if not viewport:
             issues.append("Missing viewport meta tag")
             recommendations.append("Add viewport meta tag for mobile responsiveness")
+            technical_seo_score -= 25
             score -= 5
         
-        # Ensure score doesn't go below 0
+        charset = meta_tags.get('charset')
+        if not charset:
+            technical_seo_score -= 10
+        
+        # CONTENT STRUCTURE VALIDATION
+        h1_tags = meta_tags.get('h1_tags', [])
+        if not h1_tags:
+            issues.append("No H1 tags found")
+            recommendations.append("Add at least one H1 tag to structure your content")
+            content_structure_score -= 40
+            score -= 5
+        elif len(h1_tags) > 1:
+            recommendations.append("Multiple H1 tags found - consider using only one H1 per page")
+            content_structure_score -= 20
+        
+        # Check for keywords
+        keywords = meta_tags.get('keywords')
+        if keywords:
+            content_structure_score += 10  # Bonus for having keywords
+        
+        # Ensure scores don't go below 0 or above 100
+        basic_meta_score = max(0, min(100, basic_meta_score))
+        social_media_score = max(0, min(100, social_media_score))
+        technical_seo_score = max(0, min(100, technical_seo_score))
+        content_structure_score = max(0, min(100, content_structure_score))
         score = max(0, score)
         
         return {
             "score": score,
             "issues": issues,
-            "recommendations": recommendations
+            "recommendations": recommendations,
+            "category_scores": {
+                "basic_meta": {
+                    "score": basic_meta_score,
+                    "name": "Basic Meta Tags",
+                    "description": "Title, description, and essential meta tags"
+                },
+                "social_media": {
+                    "score": social_media_score,
+                    "name": "Social Media",
+                    "description": "Open Graph and Twitter Card optimization"
+                },
+                "technical_seo": {
+                    "score": technical_seo_score,
+                    "name": "Technical SEO",
+                    "description": "Canonical URLs, robots, viewport, and charset"
+                },
+                "content_structure": {
+                    "score": content_structure_score,
+                    "name": "Content Structure",
+                    "description": "H1 tags, keywords, and content organization"
+                }
+            }
         }
