@@ -1,0 +1,6 @@
+flask
+gunicorn
+beautifulsoup4
+requests
+validators
+lxml
